@@ -1,0 +1,5 @@
+[
+    { "id": 1, "Alumno": "Karely Ruiz", "Grado": "9", "Grupo": "A", "Sexo": "F", "Email": "karely@example.com" },
+    { "id": 2, "Alumno": "Benito Camelo", "Grado": "10", "Grupo": "B", "Sexo": "M", "Email": "benito@example.com" },
+    { "id": 3, "Alumno": "John Travolta", "Grado": "9", "Grupo": "A", "Sexo": "M", "Email": "john@example.com" }
+]
