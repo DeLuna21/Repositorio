@@ -16,10 +16,13 @@ app.use(express.json());
 app.use(require('./routes/index'));
 app.use('/api/alumnos', require('./routes/alumnos'));
 
+// Obtener la URL reenviada desde GitHub
+const gitRemoteUrl = 'https://effective-space-memory-gg76g6g7w45fwvw6-3000.app.github.dev/';
+const parsedUrl = new URL(gitRemoteUrl);
+const gitRemoteHost = parsedUrl.hostname;
+const gitRemotePort = parsedUrl.port || 3000; // Suponiendo el puerto 443 para HTTPS
 
-
-//star
-app.listen(3000, function () {
-    console.log(`Server on port ${app.get('port')}`);
+// Iniciar servidor
+app.listen(gitRemotePort, function () {
+    console.log(`Servidor escuchando en la dirección reenviada por Git: ${gitRemoteUrl}`);
 });
- 
