@@ -1,78 +1,72 @@
 const { Router } = require('express');
 const router = Router();
-const alumnos = require('../sample.json');
+const Alumno = require('../models/Alumno'); // Importa el modelo de alumno definido en tu aplicación
 const _ = require('underscore');
 
 // Expresión regular para validar el formato de un correo electrónico
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-router.get('/', (req, res) => {
-    res.json(alumnos)
-});
-
-router.get('/:id', (req, res) => {
-    const alumnoId = parseInt(req.params.id);
-    const alumno = alumnos.find(alumno => alumno.id === alumnoId);
-
-    if (!alumno) {
-        return res.status(404).json({ mensaje: 'Alumno no encontrado' });
+router.get('/', async (req, res) => {
+    try {
+        const alumnos = await Alumno.find();
+        res.json(alumnos);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
-
-    res.json(alumno);
 });
 
-router.post('/', (req, res) => {
+router.get('/:id', async (req, res) => {
+    try {
+        const alumno = await Alumno.findById(req.params.id);
+        if (!alumno) {
+            return res.status(404).json({ mensaje: 'Alumno no encontrado' });
+        }
+        res.json(alumno);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+router.post('/', async (req, res) => {
     const { Alumno, Grado, Grupo, Sexo, Email } = req.body;
 
     if (typeof Alumno === 'string' && typeof Grupo === 'string' && Number.isInteger(Number(Grado)) && typeof Sexo === 'string' && Email && emailRegex.test(Email)) {
-        const id = alumnos.length + 1;
-        const newAlum = { id, Alumno, Grado, Grupo, Sexo, Email };
-        alumnos.push(newAlum);
-        res.status(201).json({ send: "Enviado" });
+        try {
+            const nuevoAlumno = await Alumno.create(req.body);
+            res.status(201).json(nuevoAlumno);
+        } catch (error) {
+            res.status(400).json({ error: error.message });
+        }
     } else {
         res.status(400).json({ error: "Por favor, proporciona Alumno y Grupo como strings, Grado como un número entero, Sexo como string, y asegúrate de proporcionar todos los campos requeridos y un correo electrónico válido" });
     }
 });
 
-router.delete('/:id', (req, res) => {
-    const { id } = req.params;
-    let alumnoEncontrado = false;
-
-    _.each(alumnos, (alumno, i) => {
-        if (alumno.id == id) {
-            alumnos.splice(i, 1);
-            alumnoEncontrado = true;
+router.delete('/:id', async (req, res) => {
+    try {
+        const alumnoEliminado = await Alumno.findByIdAndDelete(req.params.id);
+        if (!alumnoEliminado) {
+            return res.status(404).json({ error: 'Alumno no encontrado' });
         }
-    });
-
-    if (alumnoEncontrado) {
-        res.status(200).json({ send: "Removed" });
-    } else {
-        res.status(404).json({ error: "Alumno no encontrado" });
+        res.status(200).json({ mensaje: 'Alumno eliminado exitosamente' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
 });
 
-router.put('/:id', (req, res) => {
+router.put('/:id', async (req, res) => {
     const { id } = req.params;
-    let alumnoEncontrado = false;
     const { Alumno, Grado, Grupo, Sexo, Email } = req.body;
 
     if (typeof Alumno === 'string' && typeof Grupo === 'string' && Number.isInteger(Number(Grado)) && typeof Sexo === 'string' && Email && emailRegex.test(Email)) {
-        _.each(alumnos, (alumno, i) => {
-            if (alumno.id == id) {
-                alumno.Alumno = Alumno;
-                alumno.Grado = Grado;
-                alumno.Grupo = Grupo;
-                alumno.Sexo = Sexo;
-                alumno.Email = Email;
-                alumnoEncontrado = true;
+        try {
+            const alumnoActualizado = await Alumno.findByIdAndUpdate(id, req.body, { new: true });
+            if (!alumnoActualizado) {
+                return res.status(404).json({ error: 'Alumno no encontrado' });
             }
-        });
-
-        if (alumnoEncontrado) {
-            res.status(200).json({ send: "Update" });
-        } else {
-            res.status(404).json({ error: "Error updating" });
+            res.status(200).json(alumnoActualizado);
+        } catch (error) {
+            res.status(500).json({ error: error.message });
         }
     } else {
         res.status(400).json({ error: "Por favor, proporciona Alumno y Grupo como strings, Grado como un número entero, Sexo como string, y asegúrate de proporcionar todos los campos requeridos y un correo electrónico válido" });
