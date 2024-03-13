@@ -7,8 +7,8 @@ const dotenv = require('dotenv');
 // Cargar variables de entorno desde un archivo .env
 dotenv.config();
 
-// Conexión a la base de datos MongoDB
-mongoose.connect(process.env.MONGODB_URI + '/Prueba', {
+// Conexión a la base de datos MongoDB Atlas
+mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 });
@@ -17,7 +17,7 @@ mongoose.connect(process.env.MONGODB_URI + '/Prueba', {
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'Error de conexión a MongoDB:'));
 db.once('open', function() {
-  console.log('Conexión exitosa a MongoDB');
+  console.log('Conexión exitosa a MongoDB Atlas');
 });
 
 //Setting
