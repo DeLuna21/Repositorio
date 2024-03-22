@@ -34,7 +34,7 @@ app.use(require('./routes/index'));
 app.use('/api/alumnos', require('./routes/alumnos'));
 
 // Obtener la URL reenviada desde GitHub
-const gitRemoteUrl = 'https://effective-space-memory-gg76g6g7w45fwvw6-3000.app.github.dev/';
+const gitRemoteUrl = 'https://humble-chainsaw-jxq9x9xqp5gh56g5-3000.app.github.dev/';
 const parsedUrl = new URL(gitRemoteUrl);
 const gitRemoteHost = parsedUrl.hostname;
 const gitRemotePort = parsedUrl.port || process.env.PORT || 3000; // Utilizamos el puerto definido en las variables de entorno o el puerto 3000 como valor por defecto
