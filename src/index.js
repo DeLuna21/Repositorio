@@ -31,7 +31,7 @@ app.use(express.json());
 
 //Rutas
 app.use(require('./routes/index'));
-app.use('/api/alumnos', require('./routes/alumnos'));
+app.use('/alumnos', require('./routes/alumnos'));
 
 // Obtener la URL reenviada desde GitHub
 const gitRemoteUrl = 'https://humble-chainsaw-jxq9x9xqp5gh56g5-3000.app.github.dev/';
