@@ -1,12 +1,12 @@
 const mongoose = require('mongoose');
+const Alumno = require('../models/Alumno');
 
 const alumnoSchema = new mongoose.Schema({
-    // Definir la estructura del modelo de alumno aquí
-    Alumno: String,
-    Grado: Number,
-    Grupo: String,
-    Sexo: String,
-    Email: String
-});
+        Alumno: { type: String, required: true },
+        Grado: { type: Number, required: true },
+        Grupo: { type: String, required: true },
+        Sexo: { type: String, required: true },
+        Email: { type: String, required: true, unique: true }
+      });
 
 module.exports = mongoose.model('Alumno', alumnoSchema);

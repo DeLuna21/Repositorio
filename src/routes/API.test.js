@@ -1,5 +1,5 @@
 const { getAlumnos, getAlumnosId, postAlumnos, deleteAlumnos, putAlumnos } = require('../routes/alumnosControlador');
-
+const alumnoSchema = require('../models/Alumno')
 // Mock de la función Alumno.find para simular su comportamiento
 jest.mock('../models/Alumno.js');
 
@@ -10,16 +10,16 @@ const mongoose = require('mongoose');
 const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
 
 // Mock de Alumno.create
-Alumno.create = jest.fn();
+alumnoSchema.create = jest.fn();
 
 // Mockear findById, findByIdAndDelete y findByIdAndUpdate de mongoose
 mongoose.Types.ObjectId.isValid = jest.fn();
-Alumno.findById = jest.fn();
-Alumno.findByIdAndDelete = jest.fn();
-Alumno.findByIdAndUpdate = jest.fn();
+alumnoSchema.findById = jest.fn();
+alumnoSchema.findByIdAndDelete = jest.fn();
+alumnoSchema.findByIdAndUpdate = jest.fn();
 
 //Prueba Unitaria de Consulta Alumnos
-/*describe('getAlumnos', () => {
+describe('getAlumnos', () => {
     it('debería devolver una lista de alumnos', async () => {
         const alumnosMock = [{ nombre: '', Sexo: 'F' }, { nombre: '', Sexo: 'F', error: '' }];
         Alumno.find.mockResolvedValueOnce(alumnosMock);
@@ -33,10 +33,10 @@ Alumno.findByIdAndUpdate = jest.fn();
 
         expect(res.json).toHaveBeenCalledWith(alumnosMock);
     });
-}); */
+}); 
 
 //Prueba Unitaria de Consulta Alumnos con filtro de ID
-/*describe('getAlumnosId', () => {
+describe('getAlumnosId', () => {
     it('debería devolver un alumno cuando se proporciona un ID válido', async () => {
         const alumnoMock = [{ id: '',nombre: '', Sexo: 'F' }, { nombre: '', Sexo: 'F', error: '' }];
         mongoose.Types.ObjectId.isValid.mockReturnValue(true);
@@ -49,7 +49,7 @@ Alumno.findByIdAndUpdate = jest.fn();
 
         expect(res.json).toHaveBeenCalledWith(alumnoMock);
     });
-}); */
+}); 
 
 //Prueba Unitaria de Creación de Alumnos
 describe('postAlumnos', () => {
@@ -57,16 +57,11 @@ describe('postAlumnos', () => {
         const nuevoAlumno = { Alumno: 'Nuevo Alumno', Grado: 10, Grupo: 'A', Sexo: 'M', Email: 'Ambrosio@example.com' };
         Alumno.create.mockResolvedValue(nuevoAlumno);
 
-        console.log("entra 1")
         const req = { body: {  Alumno: 'Nuevo Alumno', Grado: 10, Grupo: 'A', Sexo: 'M', Email: 'Ambrosio@example.com'} };
-        console.log("entra 2")
         const res = { json: jest.fn(), status: jest.fn().mockReturnThis() };
-        console.log("entra 3")
 
         await postAlumnos(req, res);
-        console.log("----------------------")
         console.log(res)
-        console.log("----------------------")
         console.log(res.json);
 
         expect(res.status).toHaveBeenCalledWith(201);
@@ -75,7 +70,7 @@ describe('postAlumnos', () => {
 }); 
  
 //Prueba Unitaria de Eliminación de Alumno
-/*describe('deleteAlumnos', () => {
+describe('deleteAlumnos', () => {
     it('debería eliminar un alumno y devolver un mensaje con el código de estado 200 si se proporciona un ID válido', async () => {
         // ID de prueba para un alumno existente
         const idAlumno = '65fe4dc75ca8d721b75c7584';
@@ -97,7 +92,7 @@ describe('postAlumnos', () => {
         expect(res.status).toHaveBeenCalledWith(200);
         expect(res.json).toHaveBeenCalledWith({ mensaje: 'Alumno eliminado exitosamente' });
     });
-}); */
+}); 
 
 //Prueba Unitaria de Modificación de Alumno
 describe('putAlumnos', () => {
@@ -105,7 +100,7 @@ describe('putAlumnos', () => {
         const idAlumno = '65fe4dc75ca8d721b75c7584';
         const datosActualizados = { Alumno: 'Nuevo Nombre', Grado: '11', Grupo: 'A', Sexo: 'M', Email: 'correo@ejemplo.com' };
         const alumnoActualizado = { _id: idAlumno, ...datosActualizados };
-        Alumno.findByIdAndUpdate.mockResolvedValue(alumnoActualizado);
+        alumnoSchema.findByIdAndUpdate.mockResolvedValue(alumnoActualizado);
 
         const req = { params: { id: idAlumno }, body: datosActualizados };
         const res = { json: jest.fn(), status: jest.fn().mockReturnThis() };
