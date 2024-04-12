@@ -6,7 +6,7 @@ const mongoose = require('mongoose');
 const alumnosControlador = require('../routes/alumnosControlador');
 
 // Expresión regular para validar el formato de un correo electrónico
-const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
 
 //Ruta para obtener todos los alumnos
 router.get('/', alumnosControlador.getAlumnos);

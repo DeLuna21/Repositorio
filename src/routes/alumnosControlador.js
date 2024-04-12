@@ -1,5 +1,5 @@
 const Alumno = require('../models/Alumno');
-const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
 const mongoose = require('mongoose');
 
 // Función para obtener todos los alumnos
@@ -10,7 +10,7 @@ exports.getAlumnos = async (req, res) => {
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
-};
+}; 
 
 //Función para consultar filtrando los ID de Alumnos
 exports.getAlumnosId = async (req, res) => {
@@ -33,23 +33,34 @@ exports.getAlumnosId = async (req, res) => {
     } catch (error) {
         // Manejar errores internos del servidor
         res.status(500).json({ error: error.message });
-    }};
+    }}; 
 
 //Función para Agregar información de Alumnos
 exports.postAlumnos = async (req, res) => {
-    const { Alumno, Grado, Grupo, Sexo, Email } = req.body;
-
-    if (typeof Alumno === 'string' && typeof Grupo === 'string' && Number.isInteger(Number(Grado)) && typeof Sexo === 'string' && Email && emailRegex.test(Email)) {
-        try {
-            const nuevoAlumno = await Alumno.create(req.body);
-            res.status(201).json(nuevoAlumno);
-        } catch (error) {
-            res.status(500).json({ error: error.message }); // Cambiar el código de estado a 500 en caso de error interno
-        }
+    const datosAlumno = req.body[0]; // Obtener el primer (y único) elemento del arreglo
+    const { Alumno, Grado, Grupo, Sexo, Email } = datosAlumno;
+  
+    if (
+        typeof Alumno === 'string' &&
+        typeof Grupo === 'string' &&
+        Number.isInteger(Number(Grado)) &&
+        typeof Sexo === 'string' &&
+        Email &&
+        (console.log(emailRegex.test(Email)), emailRegex.test(Email)) 
+      ) {
+      try {
+        const nuevoAlumno = await Alumno.create(datosAlumno);
+        res.status(201).json(nuevoAlumno);
+      } catch (error) {
+        res.status(500).json({ error: error.message });
+      }
     } else {
-        res.status(400).json({ error: "Por favor, proporciona Alumno y Grupo como strings, Grado como un número entero, Sexo como string, y asegúrate de proporcionar todos los campos requeridos y un correo electrónico válido" });
+      res.status(400).json({
+        error:
+          'Por favor, proporciona Alumno y Grupo como strings, Grado como un número entero, Sexo como string, y asegúrate de proporcionar todos los campos requeridos y un correo electrónico válido'
+      });
     }
-};
+  };
 
 //Funcion para borrar alumnos 
 exports.deleteAlumnos = async (req, res) => {
@@ -62,7 +73,7 @@ exports.deleteAlumnos = async (req, res) => {
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
-};
+}; 
 
 //Función para modificar o actualizar la información de los Alumnos
 exports.putAlumnos = async (req, res) => {
@@ -77,6 +88,7 @@ exports.putAlumnos = async (req, res) => {
             }
             res.status(200).json(alumnoActualizado);
         } catch (error) {
+            console.log(error.message)
             res.status(500).json({ error: error.message });
         }
     } else {
