@@ -7,8 +7,8 @@ const dotenv = require('dotenv');
 // Cargar variables de entorno desde un archivo .env
 dotenv.config();
 
-// Conexión a la base de datos MongoDB
-mongoose.connect(process.env.MONGODB_URI + '/Prueba', {
+// Conexión a la base de datos MongoDB Atlas
+mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 });
@@ -17,7 +17,7 @@ mongoose.connect(process.env.MONGODB_URI + '/Prueba', {
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'Error de conexión a MongoDB:'));
 db.once('open', function() {
-  console.log('Conexión exitosa a MongoDB');
+  console.log('Conexión exitosa a MongoDB Atlas');
 });
 
 //Setting
@@ -31,10 +31,10 @@ app.use(express.json());
 
 //Rutas
 app.use(require('./routes/index'));
-app.use('/api/alumnos', require('./routes/alumnos'));
+app.use('/alumnos', require('./routes/alumnos'));
 
 // Obtener la URL reenviada desde GitHub
-const gitRemoteUrl = 'https://effective-space-memory-gg76g6g7w45fwvw6-3000.app.github.dev/';
+const gitRemoteUrl = 'https://humble-chainsaw-jxq9x9xqp5gh56g5-3000.app.github.dev/';
 const parsedUrl = new URL(gitRemoteUrl);
 const gitRemoteHost = parsedUrl.hostname;
 const gitRemotePort = parsedUrl.port || process.env.PORT || 3000; // Utilizamos el puerto definido en las variables de entorno o el puerto 3000 como valor por defecto

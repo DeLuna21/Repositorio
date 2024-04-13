@@ -2,75 +2,25 @@ const { Router } = require('express');
 const router = Router();
 const Alumno = require('../models/Alumno'); // Importa el modelo de alumno definido en tu aplicación
 const _ = require('underscore');
+const mongoose = require('mongoose');
+const alumnosControlador = require('../routes/alumnosControlador');
 
 // Expresión regular para validar el formato de un correo electrónico
-const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
 
-router.get('/', async (req, res) => {
-    try {
-        const alumnos = await Alumno.find();
-        res.json(alumnos);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-});
+//Ruta para obtener todos los alumnos
+router.get('/', alumnosControlador.getAlumnos);
 
-router.get('/:id', async (req, res) => {
-    try {
-        const alumno = await Alumno.findById(req.params.id);
-        if (!alumno) {
-            return res.status(404).json({ mensaje: 'Alumno no encontrado' });
-        }
-        res.json(alumno);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-});
+//Ruta para consultar Alumnos por filtro de ID
+router.get('/:id', alumnosControlador.getAlumnosId);
 
-router.post('/', async (req, res) => {
-    const { Alumno, Grado, Grupo, Sexo, Email } = req.body;
+//Ruta para Agregar Alumnos
+router.post('/', alumnosControlador.postAlumnos);
 
-    if (typeof Alumno === 'string' && typeof Grupo === 'string' && Number.isInteger(Number(Grado)) && typeof Sexo === 'string' && Email && emailRegex.test(Email)) {
-        try {
-            const nuevoAlumno = await Alumno.create(req.body);
-            res.status(201).json(nuevoAlumno);
-        } catch (error) {
-            res.status(400).json({ error: error.message });
-        }
-    } else {
-        res.status(400).json({ error: "Por favor, proporciona Alumno y Grupo como strings, Grado como un número entero, Sexo como string, y asegúrate de proporcionar todos los campos requeridos y un correo electrónico válido" });
-    }
-});
+//Ruta para eliminar Alumnos
+router.delete('/:id', alumnosControlador.deleteAlumnos);
 
-router.delete('/:id', async (req, res) => {
-    try {
-        const alumnoEliminado = await Alumno.findByIdAndDelete(req.params.id);
-        if (!alumnoEliminado) {
-            return res.status(404).json({ error: 'Alumno no encontrado' });
-        }
-        res.status(200).json({ mensaje: 'Alumno eliminado exitosamente' });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-});
+//Ruta para Modificar o Actualizar información de Alumnos
+router.put('/:id', alumnosControlador.putAlumnos);
 
-router.put('/:id', async (req, res) => {
-    const { id } = req.params;
-    const { Alumno, Grado, Grupo, Sexo, Email } = req.body;
-
-    if (typeof Alumno === 'string' && typeof Grupo === 'string' && Number.isInteger(Number(Grado)) && typeof Sexo === 'string' && Email && emailRegex.test(Email)) {
-        try {
-            const alumnoActualizado = await Alumno.findByIdAndUpdate(id, req.body, { new: true });
-            if (!alumnoActualizado) {
-                return res.status(404).json({ error: 'Alumno no encontrado' });
-            }
-            res.status(200).json(alumnoActualizado);
-        } catch (error) {
-            res.status(500).json({ error: error.message });
-        }
-    } else {
-        res.status(400).json({ error: "Por favor, proporciona Alumno y Grupo como strings, Grado como un número entero, Sexo como string, y asegúrate de proporcionar todos los campos requeridos y un correo electrónico válido" });
-    }
-});
-
-module.exports = router;
+module.exports = router,emailRegex,mongoose;
