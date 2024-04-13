@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const Alumno = require('../models/Alumno');
 
 const alumnoSchema = new mongoose.Schema({
         Alumno: { type: String, required: true },
